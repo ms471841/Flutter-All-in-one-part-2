@@ -1,0 +1,26 @@
+1. Over 70 Articles published at geeksforgeeks on technology Flutter.
+   Refer link - https://auth.geeksforgeeks.org/user/ms471841/articles
+
+2. Over 200 problem solved at coding platform Leetcode. 
+   Refer link - https://leetcode.com/ms471841/
+
+3. Google coding competetion kick start, hash code and getting the certificate.
+   Refer link - https://github.com/ms471841/Google-Competition-
+
+4. Execellent performance in JOB-A-THON 13.0 Hiring contest organized by GeeksforGeeks, scoring 167 out of 175 and won SDE test series.
+   Refer link - shorturl.at/dtFLR
+
+5. Among the Top 100 candidates in GEEKS PREMIER LEAGUE. And won the SmartBand organized by the GeeksforGeeks.
+
+6. Solved over 200 problems at Codechef and have rank 2 star.
+   Refer link - https://www.codechef.com/users/ms471841
+
+
+
+C++, Python(Basic), Data Structure and Algorithms (Advanced), Flutter and Dart , HTML, CSS, JavaScript, ReactJs ,  SQL , Firebase (Cloud Firestore and Realtime Database), mongoDB(Basic),  DBMS , OOPS concepts , GIT and GITHUB 
+
+Language and Technical concepts - C++, Python(Basic), Data Structure and Algorithms (Advanced), OOPS concepts , DBMS.
+ Developmet - Flutter and Dart(Android and Desktop App development), HTML, CSS, JavaScript, ReactJs(Web development)
+DataBase - SQL, Firebase (Cloud Firestore and Realtime Database), mongoDB(Basic)
+ Tools - GIT and GITHUB , window
+  
