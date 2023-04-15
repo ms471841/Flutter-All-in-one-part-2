@@ -9,15 +9,17 @@ class RunMyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String myString = "hello world";
-    String capitalizedString = myString.capitalize();
+    String myString = "Capitalized the first letter of every word the string";
+    String capitalizedString =
+        myString.split(' ').map((word) => word.capitalize()).join(' ');
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(primarySwatch: Colors.green),
       home: Scaffold(
         appBar: AppBar(
-          title: Text('Capitalized the First letter of the string'),
+          title:
+              Text('Capitalized the First letter of every word of the string'),
         ),
         body: Center(
           child: Column(
@@ -25,11 +27,11 @@ class RunMyApp extends StatelessWidget {
             children: [
               Text(
                 'Original String - ${myString}',
-                style: TextStyle(fontWeight: FontWeight.w800, fontSize: 20),
+                style: TextStyle(fontWeight: FontWeight.w200, fontSize: 20),
               ),
               Text(
                 'Capitalized String - ${capitalizedString}',
-                style: TextStyle(fontWeight: FontWeight.w800, fontSize: 20),
+                style: TextStyle(fontWeight: FontWeight.w200, fontSize: 20),
               )
             ],
           ),
