@@ -27,14 +27,14 @@ class MyWidget extends StatelessWidget {
       ),
       body: Center(
         child: ElevatedButton(
-          onPressed: () => _showUsername(context),
+          onPressed: () => _showTitle(context),
           child: Text('Show Title'),
         ),
       ),
     );
   }
 
-  void _showUsername(BuildContext context) async {
+  void _showTitle(BuildContext context) async {
     // simulate fetching data from an API
     await Future.delayed(Duration(seconds: 2));
 
@@ -45,8 +45,8 @@ class MyWidget extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Title'),
-        content: Text(_title),
+        title: Text(_title),
+        content: Text('Late is Initialized by text : ${_title}'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
