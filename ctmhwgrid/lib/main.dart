@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(RunMyApp());
+  runApp(MaterialApp(
+    debugShowCheckedModeBanner: false,
+    theme: ThemeData(primarySwatch: Colors.green),
+    home: RunMyApp(),
+  ));
 }
 
 class RunMyApp extends StatefulWidget {
@@ -10,7 +14,7 @@ class RunMyApp extends StatefulWidget {
 }
 
 class _RunMyAppState extends State<RunMyApp> {
-  List<String> widgetList = ['A', 'B', 'C'];
+  List<String> widgetList = ['Geeks', 'for', 'Geeks'];
 
   @override
   Widget build(BuildContext context) {
@@ -33,14 +37,13 @@ class _RunMyAppState extends State<RunMyApp> {
           scrollDirection: Axis.vertical,
           children: widgetList.map((String value) {
             return Container(
-              color: Colors.green,
+              color: Colors.amberAccent,
               margin: EdgeInsets.all(1.0),
               child: Center(
                 child: Text(
                   value,
                   style: TextStyle(
                     fontSize: 50.0,
-                    color: Colors.white,
                   ),
                 ),
               ),
