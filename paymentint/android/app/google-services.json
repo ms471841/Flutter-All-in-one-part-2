@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "936727262383",
+    "project_id": "printerandmounters",
+    "storage_bucket": "printerandmounters.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:936727262383:android:283f8a9771a61c8b61905a",
+        "android_client_info": {
+          "package_name": "com.example.paymentint"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "936727262383-ruor4lodu1gie33sem11fpjo1d0vijgd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBW7IZ2rDz8qrJRN-4HPgQSsvSUKwVr31E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "936727262383-ruor4lodu1gie33sem11fpjo1d0vijgd.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
