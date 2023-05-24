@@ -10,8 +10,9 @@ class AuthService {
   Future<MyUser?> isUserLoggedIn() async {
     final user = _auth.currentUser;
     if (user != null) {
-      return await _database.getUserData(user.uid);
+      return await _database.fetchUserWithSubscriptionDetails(user.uid);
     }
+    return null;
   }
 
 //sign in with email and password

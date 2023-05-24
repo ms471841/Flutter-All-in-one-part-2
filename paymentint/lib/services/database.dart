@@ -4,9 +4,8 @@ import 'package:paymentint/data/models/user.dart';
 
 class Database {
   // save user data when signin
-  Future<void> saveUserData(String uid, MyUser user) async {
-    final userRef = FirebaseFirestore.instance.collection('users').doc(uid);
-    print(userRef);
+  Future<void> saveUserData(MyUser user) async {
+    final userRef = FirebaseFirestore.instance.collection('users').doc(user.id);
     await userRef.set(user.toFirestore());
   }
 
@@ -35,27 +34,52 @@ class Database {
       // User document does not exist
       return null;
     } catch (e) {
-      print('Error retrieving user: $e');
       return null;
     }
   }
 
 // update user amount
   Future<void> updatePaymentStatus(
-      String? orderId, String? paymentId, int selectedPlan) async {
-    final startDate = DateTime.now();
-    final endDate = startDate
-        .add(const Duration(days: 30)); // Example: 30-day subscription period
+      Subscription subscription, MyUser user) async {
+    // Example: 30-day subscription period
 
-    await FirebaseFirestore.instance
+    await firestore
         .collection('users')
-        .doc(FirebaseAuth.instance.currentUser!.uid)
-        .update({
-      'subscriptionId': paymentId,
+        .doc(user.id)
+        .collection('subscriptions')
+        .doc(subscription.id)
+        .set(subscription.toFirestore());
+    await firestore.collection('users').doc(user.id).update({
+      'subscriptionId': subscription.id,
       'isSubscribed': true,
-      'subscriptionAmount': selectedPlan,
-      'subscriptionStartDate': startDate,
-      'subscriptionEndDate': endDate,
+      'subscriptionAmount': subscription.amount,
+      'subscriptionStartDate': subscription.startDate,
+      'subscriptionEndDate': subscription.startDate
     });
+  }
+
+  Future<MyUser> fetchUserWithSubscriptionDetails(String userId) async {
+    final DocumentSnapshot userSnapshot =
+        await firestore.collection('users').doc(userId).get();
+
+    if (userSnapshot.exists) {
+      final MyUser user = MyUser.fromFirestore(userSnapshot);
+
+      final QuerySnapshot subscriptionSnapshot = await firestore
+          .collection('users')
+          .doc(userId)
+          .collection('subscriptions')
+          .get();
+
+      final List<Subscription> subscriptions = subscriptionSnapshot.docs
+          .map((subscriptionDoc) => Subscription.fromFirestore(subscriptionDoc))
+          .toList();
+
+      user.subscriptionHistory = subscriptions;
+
+      return user;
+    }
+
+    throw Exception('User not found');
   }
 }

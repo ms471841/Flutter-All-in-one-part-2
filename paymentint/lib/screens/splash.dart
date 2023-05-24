@@ -13,7 +13,7 @@ class _SplashState extends State<Splash> {
   late bool islogin = false;
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  Future<void> _getData() async {
+  Future<void> _getUser() async {
     final user = _auth.currentUser;
     islogin = user != null;
   }
@@ -21,7 +21,7 @@ class _SplashState extends State<Splash> {
   @override
   void initState() {
     super.initState();
-    _getData();
+    _getUser();
     final page = islogin != null
         ? islogin
             ? '/home'
@@ -33,12 +33,19 @@ class _SplashState extends State<Splash> {
     );
   }
 
+  @override
   Widget build(BuildContext context) {
     return Material(
       child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: const [CircularProgressIndicator(), Text("Loading...")],
+          children: const [
+            CircularProgressIndicator(),
+            SizedBox(
+              height: 20,
+            ),
+            Text("Please Wait...")
+          ],
         ),
       ),
     );

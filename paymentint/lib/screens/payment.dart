@@ -1,20 +1,54 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:paymentint/provider/auth_provider.dart';
+import 'package:paymentint/services/database.dart';
+import 'package:paymentint/widgets/drawer.dart';
+import 'package:paymentint/widgets/subscriptionCard.dart';
+import 'package:provider/provider.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class PaymentScreen extends StatefulWidget {
+  const PaymentScreen({super.key});
+  static const String routeName = '/home';
+
   @override
-  _PaymentScreenState createState() => _PaymentScreenState();
+  State<PaymentScreen> createState() => _PaymentScreenState();
 }
 
 class _PaymentScreenState extends State<PaymentScreen> {
+  bool _isLoading = false;
+  Database database = Database();
+  Future<void> _signout() async {
+    await FirebaseAuth.instance.signOut();
+    Navigator.pushReplacementNamed(context, '/signup');
+  }
+
+  List planList = [499, 999, 1499];
+  int selectedIndex = 0;
+  int selectedPlan = 499;
+
+  void _handleSelection(int index) {
+    setState(() {
+      if (selectedIndex == index) {
+        selectedIndex = -1; // Deselect if already selected
+        selectedPlan = 0;
+      } else {
+        selectedIndex = index;
+        selectedPlan = planList[index];
+      }
+    });
+  }
+
+//
   late Razorpay _razorpay;
   TextEditingController _textEditingController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
+
     _razorpay = Razorpay();
     _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
     _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
@@ -32,7 +66,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
       'key': 'rzp_test_CVIB2W4XEdwPyx',
       'amount': amount * 100,
       'name': 'Payment Demo',
-      'description': 'buy Subcription',
+      'description': 'but Subcription',
       'prefill': {'contact': '8888888888', 'email': 'test@razorpay.com'},
       'external': {
         'wallets': ['paytm']
@@ -46,11 +80,14 @@ class _PaymentScreenState extends State<PaymentScreen> {
     }
   }
 
-  void _handlePaymentSuccess(PaymentSuccessResponse response) {
+  void _handlePaymentSuccess(PaymentSuccessResponse response) async {
     debugPrint(
         'Payment success: Order Id: ${response.orderId}, Payment Id: ${response.paymentId}, Signature: ${response.signature}');
     // Update server with payment success details
-    // _updatePaymentStatus(response.orderId, response.paymentId, 'success');
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+
+    await authProvider.saveUserSubscription(
+        response.orderId, response.paymentId!, selectedPlan);
   }
 
   void _handlePaymentError(PaymentFailureResponse response) {
@@ -62,31 +99,6 @@ class _PaymentScreenState extends State<PaymentScreen> {
 
   void _handleExternalWallet(ExternalWalletResponse response) {
     debugPrint('External Wallet: ${response.walletName}');
-  }
-
-  void _updatePaymentStatus(
-      String? orderId, String? paymentId, String status) async {
-    // Make an API call to your server to update the payment status
-    // Replace 'YOUR_API_ENDPOINT' with your actual API endpoint
-    var url = Uri.parse('YOUR_API_ENDPOINT');
-    var response = await http.post(
-      url,
-      body: {
-        'orderId': orderId,
-        'paymentId': paymentId,
-        'status': status,
-      },
-    );
-
-    if (response.statusCode == 200) {
-      var responseData = json.decode(response.body);
-      // Handle the response from your server
-      // Example: display a success message or perform additional actions
-      debugPrint('Payment status updated: ${responseData['message']}');
-    } else {
-      // Handle the error case
-      debugPrint('Failed to update payment status: ${response.statusCode}');
-    }
   }
 
   void _initiateRefund(String paymentId, double amount) async {
@@ -112,43 +124,123 @@ class _PaymentScreenState extends State<PaymentScreen> {
     }
   }
 
+//
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Payment Screen'),
-      ),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(50.0),
+    return Consumer<AuthProvider>(builder: (context, value, child) {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text('Payment'),
+        ),
+        body: Padding(
+          padding: const EdgeInsets.all(8.0),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              ElevatedButton(
-                onPressed: () {
-                  int? amount = 499;
-                  if (amount != null && amount > 0) {
-                    _openCheckout(amount);
-                  } else {
-                    debugPrint('Invalid amount');
-                  }
-                },
-                child: Text('Make Payment'),
+              // Row(
+              //   children: [
+              //     Expanded(
+              //       child: Container(
+              //         width: MediaQuery.of(context).size.width / 3,
+              //         child: SelectablePlan(
+              //           plan: 'Fixed',
+              //           index: 0,
+              //           isSelected: selectedIndex == 0,
+              //           onTap: _handleSelection,
+              //         ),
+              //       ),
+              //     ),
+              //     Expanded(
+              //       child: Container(
+              //         width: MediaQuery.of(context).size.width / 3,
+              //         child: SelectablePlan(
+              //           plan: 'Custom',
+              //           index: 0,
+              //           isSelected: selectedIndex == 0,
+              //           onTap: _handleSelection,
+              //         ),
+              //       ),
+              //     ),
+              //   ],
+              // ),
+              Row(
+                children: [
+                  Expanded(
+                    child: Container(
+                      width: MediaQuery.of(context).size.width / 3,
+                      child: SubscriptionCard(
+                        plan: 'Weekly',
+                        price: '499',
+                        index: 0,
+                        isSelected: selectedIndex == 0,
+                        onTap: _handleSelection,
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: Container(
+                      width: MediaQuery.of(context).size.width / 3,
+                      child: SubscriptionCard(
+                        plan: 'Monthly',
+                        price: '999',
+                        index: 1,
+                        isSelected: selectedIndex == 1,
+                        onTap: _handleSelection,
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: Container(
+                      width: MediaQuery.of(context).size.width / 3,
+                      child: SubscriptionCard(
+                        plan: 'Yearly',
+                        price: '1499',
+                        index: 2,
+                        isSelected: selectedIndex == 2,
+                        onTap: _handleSelection,
+                      ),
+                    ),
+                  ),
+                ],
               ),
-              SizedBox(height: 16.0),
-              ElevatedButton(
-                onPressed: () {
-                  // Example: Initiate a refund for a payment
-                  String paymentId = 'YOUR_PAYMENT_ID';
-                  double refundAmount = 10.0;
-                  _initiateRefund(paymentId, refundAmount);
-                },
-                child: Text('Initiate Refund'),
+              SizedBox(
+                height: 30,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'You pay',
+                        style: TextStyle(fontSize: 20),
+                      ),
+                      Text(
+                        'Rs${selectedPlan ?? 0}',
+                        style: TextStyle(fontSize: 20),
+                      )
+                    ],
+                  ),
+                  Container(
+                    width: 230,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        if (selectedPlan != null && selectedPlan > 0) {
+                          _openCheckout(selectedPlan);
+                        } else {
+                          debugPrint('Invalid amount');
+                        }
+                      },
+                      child: Text('Subscribe now'),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
         ),
-      ),
-    );
+      );
+    });
   }
 }

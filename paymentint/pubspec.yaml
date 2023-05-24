@@ -43,6 +43,7 @@ dependencies:
   equatable: ^2.0.5
   cloud_firestore: ^4.7.0
   selectable_box: ^1.0.8
+  intl: ^0.18.1
 
 dev_dependencies:
   flutter_test:

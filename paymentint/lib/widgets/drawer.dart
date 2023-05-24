@@ -34,7 +34,8 @@ class MyDrawer extends StatelessWidget {
 class DrawerItem extends StatelessWidget {
   DrawerItem({super.key});
   final items = [
-    {'title': 'My Account', 'icon': Icons.wallet_outlined}
+    {'title': 'My Account', 'icon': Icons.wallet_outlined, 'route': '/profile'},
+    // {'title': 'Sign out', 'icon': Icons.logout, 'route': '/signup'}
   ];
   @override
   Widget build(BuildContext context) {
@@ -48,9 +49,10 @@ class DrawerItem extends StatelessWidget {
         return ListTile(
           leading: Icon(item['icon'] as IconData?),
           title: Text(item['title'] as String),
-          onTap: () {
+          onTap: () async {
             // Handle item tap here
-            Navigator.pushNamed(context, '/profile');
+            //  await FirebaseAuth.instance.signOut();
+            Navigator.pushNamed(context, item['route'] as String);
           },
         );
       },

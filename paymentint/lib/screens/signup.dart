@@ -63,10 +63,9 @@ class _SignUpCardState extends State<SignUpCard> {
           return ElevatedButton(
             onPressed: () {
               authProvider.loginWithGoogle().then((_) {
-              // Navigate to the home screen after successful sign-in
-              Navigator.pushReplacementNamed(context, '/home');
-            });
-             
+                // Navigate to the home screen after successful sign-in
+                Navigator.pushReplacementNamed(context, '/home');
+              });
             },
             child: const Text('Sign In With Google'),
           );

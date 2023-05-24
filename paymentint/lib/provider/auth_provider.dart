@@ -9,7 +9,7 @@ class AuthProvider with ChangeNotifier {
   bool _isLoading = false;
   bool _isLogin = false;
   String? _errorMessage;
-  late MyUser? user;
+  MyUser? user;
   bool get isLogin => _isLogin;
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
@@ -42,7 +42,7 @@ class AuthProvider with ChangeNotifier {
             email: credential.email,
             photoUrl: credential.photoURL);
 
-        _database.saveUserData(credential.uid, user);
+        _database.saveUserData(user);
       }
       _isLoading = false;
       notifyListeners();
@@ -57,11 +57,28 @@ class AuthProvider with ChangeNotifier {
   Future<void> getUserData() async {
     _isLoading = true;
     _errorMessage = null;
-    // notifyListeners();
+    //notifyListeners();
     _authService.isUserLoggedIn().then((value) {
       user = value!;
       _isLoading = false;
       notifyListeners();
     });
+  }
+
+  Future<void> saveUserSubscription(
+      String? orderId, String paymentId, int selectedPlan) async {
+    _isLoading = true;
+    _errorMessage = null;
+    notifyListeners();
+    final startDate = DateTime.now();
+    final endDate = startDate.add(const Duration(days: 30));
+    final subscription = Subscription(
+        id: paymentId,
+        amount: selectedPlan,
+        startDate: startDate,
+        endDate: endDate);
+    _database.updatePaymentStatus(subscription, user!);
+    await getUserData();
+    notifyListeners();
   }
 }

@@ -7,7 +7,7 @@ class SelectablePlan extends StatelessWidget {
   final bool isSelected;
   final ValueChanged<int> onTap;
 
-  SelectablePlan({
+  const SelectablePlan({
     Key? key,
     required this.plan,
     required this.index,
